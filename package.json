@@ -1,0 +1,26 @@
+{
+  "name": "voxel-raycast",
+  "version": "0.0.0",
+  "description": "Ray queries for voxel.js",
+  "main": "raycast.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mikolalysenko/voxel-raycast.git"
+  },
+  "keywords": [
+    "voxel.js",
+    "ray",
+    "cast",
+    "trace",
+    "traceRay",
+    "query",
+    "line"
+  ],
+  "author": "Mikola Lysenko",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "2481aa74301f22753edb43eea568522fe8ee10af"
+}
