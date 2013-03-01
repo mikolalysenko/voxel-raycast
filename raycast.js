@@ -1,5 +1,7 @@
 "use strict";
 
+var EPSILON = 0.0001
+
 //Voxel ray marching code, ported from an old project
 function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
   var ox = origin[0]
@@ -49,8 +51,8 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
     var fy = oy - iy;
     var fz = oz - iz;
     
-    if(dx < -0.0001) {
-      if(fx < 0.0001)
+    if(dx < -EPSILON) {
+      if(fx < EPSILON)
         fx = 1.0;
       var s = -fx/dx;
       if(s < step) {
@@ -58,10 +60,9 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    if(dx > 0.0001) {
-      if(fx > 0.9999) {
-        fx = 0.0;
-      }
+    if(dx > EPSILON) {
+      if(fx > 1.0 - EPSILON)
+        fx = 0.0
       var s = (1.0-fx)/dx;
       if(s < step) {
         norm_axis = -1;
@@ -69,8 +70,8 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
       }
     }
     
-    if(dy < -0.0001) {
-      if(fy < 0.0001)
+    if(dy < -EPSILON) {
+      if(fy < EPSILON)
         fy = 1.0;
       var s = -fy/dy;
       if(s < step) {
@@ -78,10 +79,9 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    if(dy > 0.0001) {
-      if(fy > 0.9999) {
-        fy = 0.0;
-      }
+    if(dy > EPSILON) {
+      if(fy > 1.0 - EPSILON)
+        fy = 0.0
       var s = (1.0-fy)/dy;
       if(s < step) {
         norm_axis = -2;
@@ -89,8 +89,8 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
       }
     }
     
-    if(dz < -0.0001) {
-      if(fz < 0.0001)
+    if(dz < -EPSILON) {
+      if(fz < EPSILON)
         fz = 1.0;
       var s = -fz/dz;
       if(s < step) {
@@ -98,10 +98,9 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    if(dz > 0.0001) {
-      if(fz > 0.9999) {
-        fz = 0.0;
-      }
+    if(dz > EPSILON) {
+      if(fz > 1.0-EPSILON)
+        fz = 0.0
       var s = (1.0-fz)/dz;
       if(s < step) {
         norm_axis = -3;
@@ -109,7 +108,7 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
       }
     }
     
-    step = Math.min(step, 1.0)
+    step = Math.min(step, 1.0) + EPSILON
     
     t += step;
     ox += dx * step;
