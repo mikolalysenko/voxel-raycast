@@ -43,7 +43,7 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
       return b;
     }
     
-    var step = 0.5;
+    var step = 2.0;
     
     var fx = ox - ix;
     var fy = oy - iy;
@@ -99,6 +99,9 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
+    
+    step = Math.min(step, 1.0)
+    
     t += step;
     ox += dx * step;
     oy += dy * step;
