@@ -38,8 +38,14 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         hit_norm[0] = hit_norm[1] = hit_norm[2] = 0;
         if(norm_axis > 0) {
           hit_norm[norm_axis-1] = 1;
+          hit_pos[0] -= 0.5 * EPSILON * dx;
+          hit_pos[1] -= 0.5 * EPSILON * dy;
+          hit_pos[2] -= 0.5 * EPSILON * dz;
         } else if(norm_axis < 0) {
           hit_norm[-1-norm_axis] = -1;
+          hit_pos[0] -= EPSILON * dx;
+          hit_pos[1] -= EPSILON * dy;
+          hit_pos[2] -= EPSILON * dz;
         }
       }
       return b;
