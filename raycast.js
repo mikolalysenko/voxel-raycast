@@ -2,8 +2,6 @@
 
 var EPSILON = 1e-6
 
-var CACHED_VECTOR = new Float64Array(3)
-
 //Voxel ray marching code, ported from an old project
 function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
   var ox = origin[0]
