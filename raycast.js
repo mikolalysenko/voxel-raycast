@@ -18,7 +18,7 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
   if(!max_d) {
     max_d = 64.0;
   }
-
+  
   //Step block-by-block along ray
   var t = 0.0;
   while(t <= max_d) {
@@ -34,32 +34,28 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         hit_pos[0] = ox;
         hit_pos[1] = oy;
         hit_pos[2] = oz;
-        if(t > 0.0) {
-          //Check if collision intersects open interval
-          if(Math.max(fx, fy, fz) > 1.0 - 9.0 * EPSILON) {
-            hit_pos[0] -= (1.0 - EPSILON) * EPSILON * dx;
-            hit_pos[1] -= (1.0 - EPSILON) * EPSILON * dy;
-            hit_pos[2] -= (1.0 - EPSILON) * EPSILON * dz;
-          } else {
-            hit_pos[0] -= EPSILON * dx;
-            hit_pos[1] -= EPSILON * dy;
-            hit_pos[2] -= EPSILON * dz;
-          }
+        //Check if collision intersects open interval
+        if(Math.max(fx, fy, fz) > 1.0 - 9.0 * EPSILON) {
+          hit_pos[0] -= 0.5 * EPSILON * dx;
+          hit_pos[1] -= 0.5 * EPSILON * dy;
+          hit_pos[2] -= 0.5 * EPSILON * dz;
+        } else {
+          hit_pos[0] -= EPSILON * dx;
+          hit_pos[1] -= EPSILON * dy;
+          hit_pos[2] -= EPSILON * dz;
         }
       }
       if(hit_norm) {
         hit_norm[0] = hit_norm[1] = hit_norm[2] = 0;
         if(norm_axis < 0) {
           hit_norm[-norm_axis-1] = -1;
-        } else {
+        } else if(norm_axis > 0) {
           hit_norm[norm_axis-1] = 1;
         }
       }
       return b;
     }
-
     var step = 2.0;
-    
     if(dx < -EPSILON) {
       if(fx < EPSILON)
         fx = 1.0;
@@ -76,7 +72,6 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    
     if(dy < -EPSILON) {
       if(fy < EPSILON)
         fy = 1.0;
@@ -109,9 +104,11 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    
-    step = Math.min(step, 1.0) + EPSILON
-    
+    if(t === 0.0) {
+      step = EPSILON;
+    } else {
+      step = Math.min(step, 1.0) + EPSILON
+    }    
     t += step;
     ox += dx * step;
     oy += dy * step;
