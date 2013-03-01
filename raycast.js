@@ -1,6 +1,8 @@
 "use strict";
 
-var EPSILON = 0.0001
+var EPSILON = 1e-6
+
+var CACHED_VECTOR = new Float64Array(3)
 
 //Voxel ray marching code, ported from an old project
 function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
@@ -15,7 +17,6 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
   dx /= ds;
   dy /= ds;
   dz /= ds;
-
   if(!max_d) {
     max_d = 64.0;
   }
@@ -25,37 +26,41 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
   while(t <= max_d) {
     var ix = Math.floor(ox)
       , iy = Math.floor(oy)
-      , iz = Math.floor(oz);
-  
+      , iz = Math.floor(oz)
+      , fx = ox - ix
+      , fy = oy - iy
+      , fz = oz - iz;
     var b = voxels.getBlock(ix, iy, iz);
     if(b != 0) {
       if(hit_pos) {
         hit_pos[0] = ox;
         hit_pos[1] = oy;
         hit_pos[2] = oz;
+        if(t > 0.0) {
+          //Check if collision intersects open interval
+          if(Math.max(fx, fy, fz) > 1.0 - 9.0 * EPSILON) {
+            hit_pos[0] -= (1.0 - EPSILON) * EPSILON * dx;
+            hit_pos[1] -= (1.0 - EPSILON) * EPSILON * dy;
+            hit_pos[2] -= (1.0 - EPSILON) * EPSILON * dz;
+          } else {
+            hit_pos[0] -= EPSILON * dx;
+            hit_pos[1] -= EPSILON * dy;
+            hit_pos[2] -= EPSILON * dz;
+          }
+        }
       }
       if(hit_norm) {
         hit_norm[0] = hit_norm[1] = hit_norm[2] = 0;
-        if(norm_axis > 0) {
+        if(norm_axis < 0) {
+          hit_norm[-norm_axis-1] = -1;
+        } else {
           hit_norm[norm_axis-1] = 1;
-          hit_pos[0] -= 0.5 * EPSILON * dx;
-          hit_pos[1] -= 0.5 * EPSILON * dy;
-          hit_pos[2] -= 0.5 * EPSILON * dz;
-        } else if(norm_axis < 0) {
-          hit_norm[-1-norm_axis] = -1;
-          hit_pos[0] -= EPSILON * dx;
-          hit_pos[1] -= EPSILON * dy;
-          hit_pos[2] -= EPSILON * dz;
         }
       }
       return b;
     }
-    
+
     var step = 2.0;
-    
-    var fx = ox - ix;
-    var fy = oy - iy;
-    var fz = oz - iz;
     
     if(dx < -EPSILON) {
       if(fx < EPSILON)
@@ -94,7 +99,6 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         step = s;
       }
     }
-    
     if(dz < -EPSILON) {
       if(fz < EPSILON)
         fz = 1.0;

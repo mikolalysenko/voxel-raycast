@@ -62,3 +62,15 @@ console.log(position)
 console.log(normal)
 
 
+
+console.log(require("../raycast.js")(
+  fakeVoxel,
+  [45,56,45],
+  [1,-1,1],
+  100,
+  position,
+  normal
+))
+console.log(position)
+console.log(normal)
+
