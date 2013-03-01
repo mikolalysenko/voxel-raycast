@@ -1,6 +1,6 @@
 {
   "name": "voxel-raycast",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Ray queries for voxel.js",
   "main": "raycast.js",
   "scripts": {
