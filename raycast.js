@@ -34,16 +34,6 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
         hit_pos[0] = ox;
         hit_pos[1] = oy;
         hit_pos[2] = oz;
-        //Check if collision intersects open interval
-        if(Math.max(fx, fy, fz) > 1.0 - 9.0 * EPSILON) {
-          hit_pos[0] -= 0.5 * EPSILON * dx;
-          hit_pos[1] -= 0.5 * EPSILON * dy;
-          hit_pos[2] -= 0.5 * EPSILON * dz;
-        } else {
-          hit_pos[0] -= EPSILON * dx;
-          hit_pos[1] -= EPSILON * dy;
-          hit_pos[2] -= EPSILON * dz;
-        }
       }
       if(hit_norm) {
         hit_norm[0] = hit_norm[1] = hit_norm[2] = 0;
