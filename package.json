@@ -1,14 +1,17 @@
 {
   "name": "voxel-raycast",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Ray queries for voxel.js",
   "main": "raycast.js",
   "scripts": {
-    "test": "tap test/*"
+    "test": "node ./node_modules/tap/bin/tap.js test/*"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/mikolalysenko/voxel-raycast.git"
+  },
+  "devDependencies": {
+    "tap": "*"
   },
   "keywords": [
     "voxel.js",

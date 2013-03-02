@@ -35,7 +35,9 @@ Casts a ray against a voxel.js game instance.
 * `hit_position` is the point of impact of the ray and the voxel world
 * `hit_normal` is the normal of the ray impact
 
-Returns the block type of the voxel that the ray cast hit, or if no voxel was encountered returns -1.
+Returns the block type of the voxel that the ray cast hit, or if no voxel was encountered returns 0 and hit_position is set to origin + direction * max_d.
+
+If the the ray starts in a block or does not hit a voxel, the returned hit normal is [0,0,0]
 
 Credits
 =======

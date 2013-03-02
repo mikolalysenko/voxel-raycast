@@ -41,7 +41,7 @@ test("single block", function(t) {
   
   //Check distance
   for(var d=0.0; d<1.0; d+=0.1) {
-    t.equals(raycast(voxel, [0.5, 0.5, -1.0], [0, 0, 1], d), -1, "distance")
+    t.equals(raycast(voxel, [0.5, 0.5, -1.0], [0, 0, 1], d), 0, "distance")
   }
   t.equals(raycast(voxel, [0.5, 0.5, -1.0], [0, 0, 1], 1.0), 1, "distance")
   
@@ -69,11 +69,11 @@ test("single block", function(t) {
                 continue
               }
               var d = [dx,dy,dz]
-              var b = raycast(voxel, p, d, 100, hit_position, hit_normal);
+              var b = raycast(voxel, p, d, 10, hit_position, hit_normal);
               var w = (p[0]-0.5) * d[0] + (p[1]-0.5) * d[1] + (p[2]-0.5)*d[2]
      
               if(!check_hit(p, d)) {
-                t.equals(b, -1, "expect miss:" + p + " " + d)
+                t.equals(b, 0, "expect miss:" + p + ";" + d + " -- poi: " + hit_position + "," + hit_normal)
               } else {
                 t.equals(b, 1, "expect hit:" + p + "  " + d)
                 assert_tolerance(hit_position, p, "poi")
