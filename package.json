@@ -4,7 +4,7 @@
   "description": "Ray queries for voxel.js",
   "main": "raycast.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap test/*"
   },
   "repository": {
     "type": "git",
