@@ -1,48 +1,29 @@
 "use strict"
 
-var EPSILON = 1e-8
-
-function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
-  var ox = origin[0]
-    , oy = origin[1]
-    , oz = origin[2]
-    , px = origin[0]
-    , py = origin[1]
-    , pz = origin[2]
-    , dx = direction[0]
-    , dy = direction[1]
-    , dz = direction[2]
-    , ds = Math.sqrt(dx*dx + dy*dy + dz*dz)
-    , t = 0.0
+function traceRay_impl(
+  voxels,
+  px, py, pz,
+  dx, dy, dz,
+  max_d,
+  hit_pos,
+  hit_norm,
+  EPSILON) {
+  var t = 0.0
     , nx=0, ny=0, nz=0
     , ix, iy, iz
     , fx, fy, fz
     , ox, oy, oz
     , ex, ey, ez
     , b, step, min_step
-  if(ds < EPSILON) {
-    if(hit_pos) {
-      hit_pos[0] = hit_pos[1] = hit_pos[2]
-    }
-    if(hit_norm) {
-      hit_norm[0] = hit_norm[1] = hit_norm[2]
-    }
-    return 0;
-  }
-  dx /= ds
-  dy /= ds
-  dz /= ds
-  if(typeof(max_d) === "undefined") {
-    max_d = 64.0
-  }
+    , floor = Math.floor
   //Step block-by-block along ray
   while(t <= max_d) {
     ox = px + t * dx
     oy = py + t * dy
     oz = pz + t * dz
-    ix = Math.floor(ox)
-    iy = Math.floor(oy)
-    iz = Math.floor(oz)
+    ix = floor(ox)|0
+    iy = floor(oy)|0
+    iz = floor(oz)|0
     fx = ox - ix
     fy = oy - iy
     fz = oz - iz
@@ -50,9 +31,9 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
     if(b) {
       if(hit_pos) {
         //Clamp to face on hit
-        hit_pos[0] = fx < EPSILON ? +ix : ox
-        hit_pos[1] = fy < EPSILON ? +iy : oy
-        hit_pos[2] = fz < EPSILON ? +iz : oz
+        hit_pos[0] = fx < EPSILON ? +ix : (fx > 1.0-EPSILON ? ix+1.0-EPSILON : ox)
+        hit_pos[1] = fy < EPSILON ? +iy : (fy > 1.0-EPSILON ? iy+1.0-EPSILON : oy)
+        hit_pos[2] = fz < EPSILON ? +iz : (fz > 1.0-EPSILON ? iz+1.0-EPSILON : oz)
       }
       if(hit_norm) {
         hit_norm[0] = nx
@@ -62,7 +43,7 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
       return b
     }
     //Check edge cases
-    min_step = EPSILON * (1.0 + t)
+    min_step = +(EPSILON * (1.0 + t))
     if(t > min_step) {
       ex = nx < 0 ? fx <= min_step : fx >= 1.0 - min_step
       ey = ny < 0 ? fy <= min_step : fy >= 1.0 - min_step
@@ -204,6 +185,37 @@ function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm) {
     hit_norm[0] = hit_norm[1] = hit_norm[2] = 0;
   }
   return 0
+}
+
+function traceRay(voxels, origin, direction, max_d, hit_pos, hit_norm, EPSILON) {
+  var px = +origin[0]
+    , py = +origin[1]
+    , pz = +origin[2]
+    , dx = +direction[0]
+    , dy = +direction[1]
+    , dz = +direction[2]
+    , ds = Math.sqrt(dx*dx + dy*dy + dz*dz)
+  if(typeof(EPSILON) === "undefined") {
+    EPSILON = 1e-8
+  }
+  if(ds < EPSILON) {
+    if(hit_pos) {
+      hit_pos[0] = hit_pos[1] = hit_pos[2]
+    }
+    if(hit_norm) {
+      hit_norm[0] = hit_norm[1] = hit_norm[2]
+    }
+    return 0;
+  }
+  dx /= ds
+  dy /= ds
+  dz /= ds
+  if(typeof(max_d) === "undefined") {
+    max_d = 64.0
+  } else {
+    max_d = +max_d
+  }
+  return traceRay_impl(voxels, px, py, pz, dx, dy, dz, max_d, hit_pos, hit_norm, EPSILON)
 }
 
 module.exports = traceRay
